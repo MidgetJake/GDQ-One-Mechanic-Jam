@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
+using UnityEngine.UI;
 
 namespace UnityStandardAssets.Characters.FirstPerson {
     [RequireComponent(typeof (CharacterController))]
@@ -9,22 +11,17 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         public float powerMax = 10f;
         public float currPower = 10f;
         public float chargeTime = 0.75f;
+        public float shakeAmount = 0.5f;
         
-        [SerializeField] private float m_StickToGroundForce;
-        [SerializeField] private float m_GravityMultiplier;
         [SerializeField] private MouseLook m_MouseLook;
-        [SerializeField] private AudioClip m_LandSound;           // the sound played when character touches back on ground.
         [SerializeField] private ParticleSystem m_TrailParticleSystem;
+        [SerializeField] private bool m_CameraShake = false;
+        [SerializeField] private Image m_FadeImage;
 
         private Camera m_Camera;
         private bool m_Jump;
         private float m_YRotation;
         private Vector2 m_Input;
-        private Vector3 m_MoveDir = Vector3.zero;
-        private CharacterController m_CharacterController;
-        private CollisionFlags m_CollisionFlags;
-        private bool m_PreviouslyGrounded;
-        private bool m_Jumping;
         private AudioSource m_AudioSource;
         private bool m_Action = false;
         private float m_CurrCharge = 0f;
@@ -38,9 +35,7 @@ namespace UnityStandardAssets.Characters.FirstPerson {
 
         // Use this for initialization
         private void Start() {
-            m_CharacterController = GetComponent<CharacterController>();
             m_Camera = Camera.main;
-            m_Jumping = false;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
             m_Rigidbody = GetComponent<Rigidbody>();
@@ -67,10 +62,10 @@ namespace UnityStandardAssets.Characters.FirstPerson {
             if (!m_OnCooldown) {
                 if (Input.GetMouseButton(0)) {
                     RaycastHit hit;
-                    if (Physics.Raycast(m_Camera.transform.position, m_Camera.transform.forward, out hit,
+                    if (Physics.Raycast(transform.position, m_Camera.transform.forward, out hit,
                         attachRange)) {
                         if (hit.transform.CompareTag("Castable")) {
-                            Debug.DrawRay(m_Camera.transform.position, m_Camera.transform.forward * hit.distance, Color.green);
+                            Debug.DrawRay(transform.position, m_Camera.transform.forward * hit.distance, Color.green);
                             m_CurrCharge += Time.deltaTime;
                             if (m_CurrCharge >= chargeTime) {
                                 m_Rigidbody.isKinematic = true; // Freeze for 1 frame
@@ -79,14 +74,14 @@ namespace UnityStandardAssets.Characters.FirstPerson {
                                 m_Moving = false;
                             }
                         } else {
-                            Debug.DrawRay(m_Camera.transform.position, m_Camera.transform.forward * hit.distance,
+                            Debug.DrawRay(transform.position, m_Camera.transform.forward * hit.distance,
                                 Color.red);
                             m_CurrCharge = 0f;
                         }
 
                         ;
                     } else {
-                        Debug.DrawRay(m_Camera.transform.position, m_Camera.transform.forward * attachRange, Color.red);
+                        Debug.DrawRay(transform.position, m_Camera.transform.forward * attachRange, Color.red);
                         m_CurrCharge = 0f;
                     }
 
@@ -106,20 +101,20 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         }
 
         private void FixedUpdate() {
-            // get a normal for the surface that is being touched to move along it
-            RaycastHit hitInfo;
-            Physics.SphereCast(transform.position, m_CharacterController.radius, Vector3.down, out hitInfo,
-                               m_CharacterController.height/2f, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-
-            if (m_CharacterController.isGrounded) {
-                m_MoveDir.y = -m_StickToGroundForce;
-            } else  {
-                m_MoveDir += Physics.gravity*m_GravityMultiplier*Time.fixedDeltaTime;
-            }
-            //m_CollisionFlags = m_CharacterController.Move(m_MoveDir*Time.fixedDeltaTime);
-
-            //UpdateCameraPosition(speed);
             m_MouseLook.UpdateCursorLock();
+
+            if (m_CameraShake) {
+                if (shakeAmount >= 1.25f) {
+                    print("Game over!");
+                }
+                m_Camera.transform.localPosition = Random.insideUnitSphere * shakeAmount;
+                m_FadeImage.color = new Color(0, 0, 0, 1f * (shakeAmount - 0.25f));
+                shakeAmount += Time.deltaTime / 10;
+            } else {
+                m_Camera.transform.localPosition = Vector3.zero;
+                shakeAmount = 0f;
+                m_FadeImage.color = new Color(0, 0, 0, 0);
+            }
         }
 
         private void RotateView() {
@@ -127,11 +122,24 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         }
 
         private void OnCollisionEnter(Collision other) {
-            if (m_HasCast && other.transform.CompareTag("Castable") && other.collider.transform.position == m_HitTransform) {
+            if (m_HasCast && other.transform.CompareTag("Castable") && other.collider.transform.position == m_HitTransform && !Input.GetMouseButton(1)) {
                 m_Rigidbody.isKinematic = true;
                 m_OnCooldown = true;
                 m_TrailParticleSystem.Stop();
                 m_ColliderNormal = other.contacts[0].normal * 50;
+            }
+        }
+
+        private void OnTriggerExit(Collider other) {
+            if (other.transform.CompareTag("Bounds")) {
+                m_CameraShake = true;
+            }
+        }
+
+        private void OnTriggerEnter(Collider other) {
+            if (other.transform.CompareTag("Bounds")) {
+                m_CameraShake = false;
+                shakeAmount = 0f;
             }
         }
     }
