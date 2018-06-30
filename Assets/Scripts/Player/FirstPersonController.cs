@@ -126,11 +126,11 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         private void FixedUpdate() {
 
             if (m_CameraShake) {
-                if (shakeAmount >= 1.25f) {
+                if (shakeAmount >= 1f) {
                     print("Game over!");
                 }
                 m_Camera.transform.localPosition = Random.insideUnitSphere * shakeAmount;
-                m_FadeImage.color = new Color(0, 0, 0, 1f * (shakeAmount - 0.25f));
+                m_FadeImage.color = new Color(0, 0, 0, 1f * (shakeAmount));
                 shakeAmount += Time.deltaTime / 10;
             } else {
                 m_Camera.transform.localPosition = Vector3.zero;

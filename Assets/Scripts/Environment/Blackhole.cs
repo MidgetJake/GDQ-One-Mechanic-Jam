@@ -11,7 +11,7 @@ public class Blackhole : MonoBehaviour {
 	public float CalculateStrength(Transform other) {
 		float magnitude = Mathf.Clamp(m_Collider.radius - Vector3.Distance(other.position, transform.position), 0f, 10f);
 		
-		return magnitude;
+		return 1 + magnitude;
 	}
 
 	public Vector3 CalculateGravity(Transform other) {
