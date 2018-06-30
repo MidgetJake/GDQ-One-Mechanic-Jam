@@ -1,10 +1,7 @@
-using System.Runtime.InteropServices;
 using UnityEngine;
-using UnityEngine.Experimental.Rendering;
 using UnityEngine.UI;
 
 namespace UnityStandardAssets.Characters.FirstPerson {
-    [RequireComponent(typeof (CharacterController))]
     [RequireComponent(typeof (AudioSource))]
     public class FirstPersonController : MonoBehaviour {
         public float attachRange = 30f;
@@ -140,6 +137,14 @@ namespace UnityStandardAssets.Characters.FirstPerson {
             if (other.transform.CompareTag("Bounds")) {
                 m_CameraShake = false;
                 shakeAmount = 0f;
+            }
+        }
+
+        private void OnTriggerStay(Collider other) {
+            if (other.transform.CompareTag("Hole")) {
+                Vector3 gravityDir = other.transform.GetComponent<Blackhole>().CalculateGravity(transform);
+                float magnitude = other.transform.GetComponent<Blackhole>().CalculateStrength(transform);
+                m_Rigidbody.AddForce(-gravityDir * magnitude);
             }
         }
     }
