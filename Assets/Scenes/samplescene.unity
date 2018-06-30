@@ -331,7 +331,6 @@ Prefab:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-<<<<<<< HEAD
     - target: {fileID: 4958008185166500, guid: 51e984745ace4c041ac9b5a534264029, type: 2}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -366,7 +365,6 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51e984745ace4c041ac9b5a534264029, type: 2}
-=======
     - target: {fileID: 4093619474133736, guid: 5d1b13a80f02b744f89d7f802418d51d, type: 2}
       propertyPath: m_LocalPosition.x
       value: 8.91
@@ -401,7 +399,6 @@ Prefab:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5d1b13a80f02b744f89d7f802418d51d, type: 2}
->>>>>>> 636387fe530bcdb54b34131a08d6839173b087fd
   m_IsPrefabAsset: 0
 --- !u!1 &653260035
 GameObject:
@@ -737,14 +734,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
-<<<<<<< HEAD
     - target: {fileID: 114073193106209486, guid: 84f1b649ccef09d44b21d968f2dc45a9,
         type: 2}
       propertyPath: m_FadeImage
       value: 
       objectReference: {fileID: 669304076}
-=======
->>>>>>> 636387fe530bcdb54b34131a08d6839173b087fd
     - target: {fileID: 114073193106209486, guid: 84f1b649ccef09d44b21d968f2dc45a9,
         type: 2}
       propertyPath: UI
