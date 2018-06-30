@@ -30,16 +30,42 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         private bool m_Moving = false;
         private Vector3 m_ColliderNormal;
 
+        [SerializeField] private GameObject UI;
+        private bool activeMenu = false;
+
         // Use this for initialization
         private void Start() {
+            m_MouseLook.SetCursorLock(true); // Default lock
             m_Camera = Camera.main;
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
             m_Rigidbody = GetComponent<Rigidbody>();
         }
 
+        private void ToggleMenu() {
+            if (UI.active) {
+                // HIDE
+                UI.active = false;
+            } else {
+                // SHOW
+                UI.active = true;
+            }
+        }
+
         // Update is called once per frame
         private void Update()  {
+            if (Input.GetKeyDown("escape")) {
+                ToggleMenu();
+            }
+
+            if (UI.active) {
+                Time.timeScale = 0;
+                m_MouseLook.SetCursorLock(false);
+            } else {
+                Time.timeScale = 1;
+                m_MouseLook.SetCursorLock(true);
+            }
+
             RotateView();
             if (m_HasCast && !m_Moving) {
                 m_Rigidbody.isKinematic = false;
@@ -98,7 +124,6 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         }
 
         private void FixedUpdate() {
-            m_MouseLook.UpdateCursorLock();
 
             if (m_CameraShake) {
                 if (shakeAmount >= 1f) {
