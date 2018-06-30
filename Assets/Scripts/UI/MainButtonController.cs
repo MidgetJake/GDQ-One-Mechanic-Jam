@@ -9,7 +9,7 @@ public class MainButtonController : MonoBehaviour {
     }
 
     public void Restart() {
-        Application.LoadLevel("samplescene");
+        Application.LoadLevel("LevelGenerator");
     }
 
     public void MainMenu() {
