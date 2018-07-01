@@ -5,8 +5,15 @@ using UnityEngine.UI;
 namespace UnityStandardAssets.Characters.FirstPerson {
     [RequireComponent(typeof (AudioSource))]
     public class FirstPersonController : MonoBehaviour {
+        [SerializeField] private AudioSource m_ChargeSound;
+        [SerializeField] private AudioSource m_DashSound;
+        private bool m_ChargePlaying = false;
+        private bool m_DashPlaying = false;
+        private bool m_ShouldPlayDash = false;
+        
         public float attachRange = 30f;
         public int currPower = 2;
+        // temp
         public float chargeTime = 0.75f;
         public float shakeAmount = 0.5f;
 
@@ -38,9 +45,9 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         private bool m_CanPause = true;
         private bool m_Dead = false;
 
-        [SerializeField] private GameObject UI;
-        private bool activeMenu = false;
-
+        [SerializeField] private GameObject m_Ui;
+        private bool m_ActiveMenu = false;
+        
         // Use this for initialization
         private void Start() {
             m_MouseLook.SetCursorLock(true); // Default lock
@@ -48,15 +55,16 @@ namespace UnityStandardAssets.Characters.FirstPerson {
             m_AudioSource = GetComponent<AudioSource>();
 			m_MouseLook.Init(transform , m_Camera.transform);
             m_Rigidbody = GetComponent<Rigidbody>();
+            chargeTime = m_ChargeSound.clip.length;
         }
 
         private void ToggleMenu() {
-            if (UI.active) {
+            if (m_Ui.active) {
                 // HIDE
-                UI.active = false;
+                m_Ui.active = false;
             } else {
                 // SHOW
-                UI.active = true;
+                m_Ui.active = true;
             }
         }
 
@@ -66,7 +74,7 @@ namespace UnityStandardAssets.Characters.FirstPerson {
                 ToggleMenu();
             }
 
-            if (UI.active) {
+            if (m_Ui.active) {
                 Time.timeScale = 0;
                 m_MouseLook.SetCursorLock(false);
             } else if(!m_Dead){
@@ -76,6 +84,8 @@ namespace UnityStandardAssets.Characters.FirstPerson {
 
             RotateView();
             if (m_HasCast && !m_Moving) {
+                m_ChargePlaying = false;
+                m_DashSound.Play();
                 m_Rigidbody.isKinematic = false;
                 m_Rigidbody.AddForce(m_Camera.transform.forward * 1000);
                 m_CurrCharge = 0f;
@@ -109,6 +119,17 @@ namespace UnityStandardAssets.Characters.FirstPerson {
                 }
             } else {
                 m_CurrCharge = 0f;
+            }
+
+            if (Input.GetMouseButtonDown(0) && m_CurrCharge > 0) {
+                if (!m_ChargePlaying) {
+                    m_ChargePlaying = true;
+                    m_ChargeSound.Play();
+
+                    m_ShouldPlayDash = true;
+                } else {
+                    m_ChargePlaying = false;
+                }
             }
         }
 
