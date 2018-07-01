@@ -5,15 +5,18 @@ namespace UnityStandardAssets.Characters.FirstPerson {
     [RequireComponent(typeof (AudioSource))]
     public class FirstPersonController : MonoBehaviour {
         public float attachRange = 30f;
-        public float powerMax = 10f;
-        public float currPower = 10f;
+        public int currPower = 2;
         public float chargeTime = 0.75f;
         public float shakeAmount = 0.5f;
-        
+
+        [SerializeField] private Material m_Grabable;
+        [SerializeField] private Material m_NotGrabable;
         [SerializeField] private MouseLook m_MouseLook;
         [SerializeField] private ParticleSystem m_TrailParticleSystem;
         [SerializeField] private bool m_CameraShake = false;
         [SerializeField] private Image m_FadeImage;
+        [SerializeField] private Image m_Cell1;
+        [SerializeField] private Image m_Cell2;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -29,6 +32,7 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         private Vector3 m_HitTransform;
         private bool m_Moving = false;
         private Vector3 m_ColliderNormal;
+        private Transform m_PastObjectCache;
 
         [SerializeField] private GameObject UI;
         private bool activeMenu = false;
@@ -82,55 +86,36 @@ namespace UnityStandardAssets.Characters.FirstPerson {
                 m_ColliderNormal = Vector3.zero;
             } 
             
-            if (!m_OnCooldown) {
-                if (Input.GetMouseButton(0)) {
-                    RaycastHit hit;
-                    if (Physics.Raycast(transform.position, m_Camera.transform.forward, out hit,
-                        attachRange)) {
-                        if (hit.transform.CompareTag("Castable")) {
-                            Debug.DrawRay(transform.position, m_Camera.transform.forward * hit.distance, Color.green);
-                            m_CurrCharge += Time.deltaTime;
-                            if (m_CurrCharge >= chargeTime) {
-                                m_Rigidbody.isKinematic = true; // Freeze for 1 frame
-                                m_HasCast = true;
-                                m_HitTransform = hit.collider.transform.position;
-                                m_Moving = false;
-                            }
-                        } else {
-                            Debug.DrawRay(transform.position, m_Camera.transform.forward * hit.distance,
-                                Color.red);
-                            m_CurrCharge = 0f;
-                        }
-
-                        ;
+            //if (!m_OnCooldown) {
+            if (Input.GetMouseButton(0) && currPower > 0) {
+                RaycastHit hit;
+                Physics.Raycast(transform.position, m_Camera.transform.forward, out hit, attachRange);
+                Debug.DrawRay(transform.position, m_Camera.transform.forward * attachRange, Color.green);
+                m_CurrCharge += Time.deltaTime;
+                if (m_CurrCharge >= chargeTime) {
+                    m_Rigidbody.isKinematic = true; // Freeze for 1 frame
+                    m_HasCast = true;
+                    m_Moving = false;
+                    currPower--;
+                    if (currPower == 1) {
+                        m_Cell2.enabled = false;
                     } else {
-                        Debug.DrawRay(transform.position, m_Camera.transform.forward * attachRange, Color.red);
-                        m_CurrCharge = 0f;
+                        m_Cell1.enabled = false;
                     }
-
-                    ;
-                } else {
-                    m_CurrCharge = 0f;
                 }
             } else {
-                if (m_CooldownTime >= 1f) {
-                    m_OnCooldown = false;
-                    m_CooldownTime = 0f;
-                    m_HasCast = false;
-                } else {
-                    m_CooldownTime += Time.deltaTime;
-                }
+                m_CurrCharge = 0f;
             }
         }
 
         private void FixedUpdate() {
 
             if (m_CameraShake) {
-                if (shakeAmount >= 1f) {
+                if (shakeAmount >= 0.75f) {
                     print("Game over!");
                 }
                 m_Camera.transform.localPosition = Random.insideUnitSphere * shakeAmount;
-                m_FadeImage.color = new Color(0, 0, 0, 1f * (shakeAmount));
+                m_FadeImage.color = new Color(0, 0, 0, 1.34f * (shakeAmount));
                 shakeAmount += Time.deltaTime / 10;
             } else {
                 m_Camera.transform.localPosition = Vector3.zero;
@@ -144,11 +129,20 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         }
 
         private void OnCollisionEnter(Collision other) {
-            if (m_HasCast && other.transform.CompareTag("Castable") && other.collider.transform.position == m_HitTransform && !Input.GetMouseButton(1)) {
+            if (m_HasCast && other.transform.CompareTag("Castable") && m_HitTransform != other.transform.position && !Input.GetMouseButton(1)) {
+                if (m_PastObjectCache) {
+                    m_PastObjectCache.GetComponent<Renderer>().material = m_Grabable;
+                }
+                m_PastObjectCache = other.transform;
+                m_PastObjectCache.GetComponent<Renderer>().material = m_NotGrabable;
                 m_Rigidbody.isKinematic = true;
                 m_OnCooldown = true;
                 m_TrailParticleSystem.Stop();
                 m_ColliderNormal = other.contacts[0].normal * 50;
+                currPower = 2;
+                m_Cell1.enabled = true;
+                m_Cell2.enabled = true;
+                m_HitTransform = other.transform.position;
             }
         }
 
