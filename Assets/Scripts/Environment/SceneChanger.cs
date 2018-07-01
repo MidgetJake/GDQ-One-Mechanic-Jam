@@ -8,5 +8,10 @@ namespace Environment {
 		public void NextLevel() {
 			SceneManager.LoadSceneAsync(nextLevel);
 		}
+
+		public void ResetLevel() {
+			int index = SceneManager.GetActiveScene().buildIndex;
+			SceneManager.LoadSceneAsync(index);
+		}
 	}
 }

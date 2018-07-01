@@ -18,6 +18,7 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         [SerializeField] private Image m_FadeImage;
         [SerializeField] private Image m_Cell1;
         [SerializeField] private Image m_Cell2;
+        [SerializeField] private GameObject m_DeathScreen;
 
         private Camera m_Camera;
         private bool m_Jump;
@@ -113,7 +114,9 @@ namespace UnityStandardAssets.Characters.FirstPerson {
 
             if (m_CameraShake) {
                 if (shakeAmount >= 0.75f) {
-                    print("Game over!");
+                    Time.timeScale = 0;
+                    m_MouseLook.SetCursorLock(false);
+                    m_DeathScreen.SetActive(true);
                 }
                 m_Camera.transform.localPosition = Random.insideUnitSphere * shakeAmount;
                 m_FadeImage.color = new Color(0, 0, 0, 1.34f * (shakeAmount));
