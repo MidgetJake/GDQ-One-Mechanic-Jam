@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ButtonControl : MonoBehaviour {
     
-    public void ChangeScene(string index){
+    public void ChangeScene(int index){
         //SceneManager.LoadScene(index);
-        Application.LoadLevel(index);
+        SceneManager.LoadSceneAsync(index);
     }
 
     public void ExitGame() {

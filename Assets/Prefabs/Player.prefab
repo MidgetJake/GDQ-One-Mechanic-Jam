@@ -420,7 +420,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1741288551227232}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.65066713, y: 3.08, z: -12.27}
+  m_LocalPosition: {x: 0, y: 0.0535, z: -2.988}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4894778264275904}
@@ -993,9 +993,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114838038596277572, guid: 51e984745ace4c041ac9b5a534264029,
-          type: 2}
-        m_MethodName: Restart
+      - m_Target: {fileID: 114969600016125978}
+        m_MethodName: ResetLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1616,7 +1615,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 128696236676e61419486d2d9ae98246, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextLevel: 0
+  nextLevel: 4
 --- !u!124 &124699894228621068
 Behaviour:
   m_ObjectHideFlags: 1
@@ -6363,7 +6362,7 @@ Canvas:
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
   m_SortingLayerID: 0
-  m_SortingOrder: -1
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!223 &223700059907569182
 Canvas:

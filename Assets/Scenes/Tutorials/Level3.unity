@@ -423,20 +423,10 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 114073193106209486, guid: 84f1b649ccef09d44b21d968f2dc45a9,
+    - target: {fileID: 114969600016125978, guid: 84f1b649ccef09d44b21d968f2dc45a9,
         type: 2}
-      propertyPath: m_FadeImage
-      value: 
-      objectReference: {fileID: 1987494908}
-    - target: {fileID: 114073193106209486, guid: 84f1b649ccef09d44b21d968f2dc45a9,
-        type: 2}
-      propertyPath: m_MouseLook.smooth
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 224711567291356196, guid: 84f1b649ccef09d44b21d968f2dc45a9,
-        type: 2}
-      propertyPath: m_LocalPosition.z
-      value: 0
+      propertyPath: nextLevel
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 84f1b649ccef09d44b21d968f2dc45a9, type: 2}
@@ -483,12 +473,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 605ad7b46c3d1a34ab8973bf769a02f2, type: 2}
   m_IsPrefabAsset: 0
---- !u!114 &1987494908 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114408854065798380, guid: 84f1b649ccef09d44b21d968f2dc45a9,
-    type: 2}
-  m_PrefabInternal: {fileID: 1530074953}
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1001 &2034136233
 Prefab:
   m_ObjectHideFlags: 0
