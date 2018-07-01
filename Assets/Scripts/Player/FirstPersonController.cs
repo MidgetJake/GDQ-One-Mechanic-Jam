@@ -35,6 +35,8 @@ namespace UnityStandardAssets.Characters.FirstPerson {
         private bool m_Moving = false;
         private Vector3 m_ColliderNormal;
         private Transform m_PastObjectCache;
+        private bool m_CanPause = true;
+        private bool m_Dead = false;
 
         [SerializeField] private GameObject UI;
         private bool activeMenu = false;
@@ -60,14 +62,14 @@ namespace UnityStandardAssets.Characters.FirstPerson {
 
         // Update is called once per frame
         private void Update()  {
-            if (Input.GetKeyDown("escape")) {
+            if (Input.GetKeyDown("escape") && m_CanPause) {
                 ToggleMenu();
             }
 
             if (UI.active) {
                 Time.timeScale = 0;
                 m_MouseLook.SetCursorLock(false);
-            } else {
+            } else if(!m_Dead){
                 Time.timeScale = 1;
                 m_MouseLook.SetCursorLock(true);
             }
@@ -114,9 +116,7 @@ namespace UnityStandardAssets.Characters.FirstPerson {
 
             if (m_CameraShake) {
                 if (shakeAmount >= 0.75f) {
-                    Time.timeScale = 0;
-                    m_MouseLook.SetCursorLock(false);
-                    m_DeathScreen.SetActive(true);
+                    Kill();
                 }
                 m_Camera.transform.localPosition = Random.insideUnitSphere * shakeAmount;
                 m_FadeImage.color = new Color(0, 0, 0, 1.34f * (shakeAmount));
@@ -126,6 +126,15 @@ namespace UnityStandardAssets.Characters.FirstPerson {
                 shakeAmount = 0f;
                 m_FadeImage.color = new Color(0, 0, 0, 0);
             }
+        }
+
+        public void Kill() {
+            m_Dead = true;
+            m_CanPause = false;
+            m_FadeImage.color = new Color(0, 0, 0, 1f);
+            Time.timeScale = 0;
+            m_MouseLook.SetCursorLock(false);
+            m_DeathScreen.SetActive(true);
         }
 
         private void RotateView() {

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityStandardAssets.Characters.FirstPerson;
 
 public class Blackhole : MonoBehaviour {
 	public float scale = 1f;
@@ -20,5 +21,11 @@ public class Blackhole : MonoBehaviour {
 		Vector3 gravityDirection = relativeDirection.normalized;
 		
 		return !isWhite ? gravityDirection : -gravityDirection;
+	}
+
+	private void OnCollisionEnter(Collision other) {
+		if (other.transform.CompareTag("Player")) {
+			other.transform.GetComponent<FirstPersonController>().Kill();
+		}
 	}
 }
