@@ -561,7 +561,7 @@ Prefab:
     - target: {fileID: 114088852779387304, guid: 6f5812394166aab4d90a281ad5a73ca8,
         type: 2}
       propertyPath: nextLevel
-      value: 0
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4183060984197638, guid: 6f5812394166aab4d90a281ad5a73ca8, type: 2}
       propertyPath: m_LocalEulerAnglesHint.x

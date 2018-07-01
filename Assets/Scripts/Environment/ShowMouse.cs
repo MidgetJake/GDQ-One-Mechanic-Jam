@@ -6,9 +6,8 @@ public class ShowMouse : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		print("Penut");
 		Cursor.lockState = CursorLockMode.None;
 		Cursor.visible = true;
-    
+		Time.timeScale = 1;
 	}
 }
