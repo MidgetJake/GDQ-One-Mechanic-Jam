@@ -102,6 +102,12 @@ namespace UnityStandardAssets.Characters.FirstPerson {
             
             //if (!m_OnCooldown) {
             if (Input.GetMouseButton(0) && currPower > 0) {
+                if (!m_ChargePlaying) {
+                    m_ChargePlaying = true;
+                    m_ChargeSound.Play();
+                    m_ShouldPlayDash = true;
+                }
+                
                 RaycastHit hit;
                 Physics.Raycast(transform.position, m_Camera.transform.forward, out hit, attachRange);
                 Debug.DrawRay(transform.position, m_Camera.transform.forward * attachRange, Color.green);
@@ -119,17 +125,8 @@ namespace UnityStandardAssets.Characters.FirstPerson {
                 }
             } else {
                 m_CurrCharge = 0f;
-            }
-
-            if (Input.GetMouseButtonDown(0) && m_CurrCharge > 0) {
-                if (!m_ChargePlaying) {
-                    m_ChargePlaying = true;
-                    m_ChargeSound.Play();
-
-                    m_ShouldPlayDash = true;
-                } else {
-                    m_ChargePlaying = false;
-                }
+                m_ChargePlaying = false;
+                m_ChargeSound.Stop();
             }
         }
 
