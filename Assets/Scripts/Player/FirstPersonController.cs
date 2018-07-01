@@ -1,3 +1,4 @@
+using Environment;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -156,6 +157,8 @@ namespace UnityStandardAssets.Characters.FirstPerson {
             if (other.transform.CompareTag("Bounds")) {
                 m_CameraShake = false;
                 shakeAmount = 0f;
+            } else if (other.transform.CompareTag("End")) {
+                other.GetComponent<SceneChanger>().NextLevel();
             }
         }
 
